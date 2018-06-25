@@ -1,0 +1,55 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Login</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="loginStyle.css">
+</head>
+<body>
+    <div id = "login-page" class="login-page">
+        <div class="form">
+          <form class="login-form">
+            <p class="message-error" id="message-error" ></p>
+            <input id="input-email" type="email" placeholder="email"/>
+            <input id="input-password" type="password" placeholder="password"/>
+            <button id="button" type="button" onclick="login()">login</button>
+            <p class="message">Not registered? <a href="register.html">Create an account</a></p>
+          </form>
+        </div>
+    </div>
+    <script>
+        function login(){
+			$("#message-error").text("");
+            const email = document.getElementById("input-email").value;
+			const password = document.getElementById("input-password").value;
+			console.log(`Email: ${email} password: ${password}`);
+            if (formValidation(email, password)){
+				$.ajax({
+					type: "POST",
+					url: "http://localhost:3000/api/users/login",
+					data: `email=${email}&password=${password}`,
+					dataType: "JSON",
+					success: (message, textStatus, XMLHttpRequest)=>{
+						let queryUser = XMLHttpRequest.responseJSON;
+						alert(`Welcome ${queryUser.userName}`);
+					},
+					error: (XMLHttpRequest, textStatus, error)=>{
+						$("#message-error").text(XMLHttpRequest.responseJSON.message);
+					}
+				});
+            } else {
+                alert("Email and password are required!");
+            }
+        };
+        function formValidation(email, password){
+            if (email == "" || password == ""){
+                return false;
+            }else {
+                return true;
+            }
+        };
+    </script>
+</body>
+</html>

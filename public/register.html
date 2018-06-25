@@ -1,0 +1,55 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Register</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="registerStyle.css">
+</head>
+<body>
+    <div class="login-page">
+        <div class="form">
+            <form class="register-form">
+                <p class="message-error" id="message-error"></p>
+                <input id="input-userName" type="text" placeholder="name"/>
+                <input id="input-password" type="password" placeholder="password"/>
+                <input id="input-email" type="text" placeholder="email address"/>
+                <button type="button" onclick="register()">create</button>
+                <p class="message">Already registered? <a href="login.html">Sign In</a></p>
+            </form>
+        </div>
+    </div>
+    <script>
+        function register(){
+            let userName = document.getElementById("input-userName").value;
+            const password = document.getElementById("input-password").value;
+            const email = $("#input-email").val();
+            userName = userName ? userName : "";
+            if(formValidation(email, password)){
+                $.ajax({
+                    type: "POST",
+                    url: "http://localhost:3000/api/users/",
+					data: `userName=${userName}&email=${email}&password=${password}`,
+					dataType: "JSON",
+					success: (message, textStatus, XMLHttpRequest)=>{
+						alert(`Register succeeded`, window.location.replace("http://localhost:3000/login.html"));
+					},
+					error: (XMLHttpRequest, textStatus, error)=>{
+						$("#message-error").text(XMLHttpRequest.responseJSON.message);
+					}
+                });
+            } else {
+                alert("Email and password are required!");
+            }
+        }
+        function formValidation(email, password){
+            if (email == "" || password == ""){
+                return false;
+            }else {
+                return true;
+            }
+        };
+    </script>
+</body>
+</html>
